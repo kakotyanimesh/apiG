@@ -17,7 +17,7 @@ const App = () => {
   const [config, setconfig] = useState()
   const [headers, setheaders] = useState()
 
-  axios.defaults.baseURL = 'http://localhost:3000';
+  axios.defaults.baseURL = 'https://apig-backend.onrender.com';
 
   const generateApi = async () => {
     try {
