@@ -5,7 +5,7 @@ const port = 3000
 
 const app = express()
 const options = {
-	origin : ['http://localhost:5173' ]
+	origin : ['http://localhost:5173', 'https://api-g.vercel.app/']
 }
 app.use(express.json())
 app.use(cors(options))
