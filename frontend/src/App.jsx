@@ -1,8 +1,13 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { IoIosMoon } from "react-icons/io";
+import vite from '../public/vite.svg'
 
-import { IoSunny } from "react-icons/io5";
+import { IoSunny  } from "react-icons/io5";
+import { FaGithub } from "react-icons/fa";
+import { FaXTwitter  } from "react-icons/fa6";
+import { FaLinkedinIn } from "react-icons/fa6";
+
 
 
 
@@ -87,9 +92,15 @@ const App = () => {
 
   return (
     <div className='dark:bg-[#0f172a] bg-[#ffffff] min-h-screen dark:text-white font-custom '>
-      <div className='flex justify-center items-center gap-10 text-2xl font-semibold mb-10'>
-        <h1 className='mt-10'>Make Your Own API</h1>
-        <button className='mt-10 ' onClick={darkMode}>
+      <div className='pt-3 sm:pt-10 text-xl sm:text-2xl mx-4 md:mx-24 mb-2 flex justify-between sm:mx-56'>
+        <div className=''>
+          <a href="https://bento.me/animeshkakoty" target='_blanck'><img className='w-14 sm:w-18 rounded-xl' src={vite} alt="my IMAGE" /></a>
+        </div>
+        <div className='flex gap-2 sm:gap-10 pt-5'>
+          <a href="https://github.com/kakotyanimesh/apiG" target='_blanck'><FaGithub /></a>
+          <a href="https://www.linkedin.com/in/animesh-kakoty-3465791a6/" target='_blanck'><FaLinkedinIn  /></a>
+          <a href="https://x.com/_animeshkakoty" target='_blanck'><FaXTwitter  /></a>
+          <button className='h-2' onClick={darkMode}>
             {
               dark && <IoSunny />
             }
@@ -97,6 +108,11 @@ const App = () => {
               !dark && <IoIosMoon/>
             }
         </button>
+        </div>
+      </div>
+
+      <div className='flex justify-center items-center gap-10 text-2xl font-semibold mb-10'>
+        <h1 className='mt-10'>Make Your Own API</h1>
       </div>
 
       {/* new div */}
