@@ -5,11 +5,16 @@ const { title } = require("process")
 const port = 3000
 
 const app = express()
-const options = {
-	origin : ['http://localhost:5173', 'https://api-g.vercel.app']
-}
+const corsOptions = {
+    origin: ['http://localhost:5173', 'https://api-g.vercel.app'],
+    methods: ['GET', 'POST', 'DELETE'],
+    allowedHeaders: ['Content-Type'],
+    credentials: true,
+};
+
+app.use(cors(corsOptions))
 app.use(express.json())
-app.use(cors(options))
+// app.use(cors(options))
 
 
 fs.readFile('booksApi.json', (err, data) => {
@@ -75,7 +80,7 @@ app.post('/generateApi', (req, res) => {
 	
 	const newBooks = []
 // here => 30 / 40 bla bla 
-	for (let i = 0; i < limit || 40; i++) {
+	for (let i = 0; i < limit ; i++) {
 		const books = {
 			id: jsonData.length + 1 + i,
 			title : generateBookName(),
@@ -104,3 +109,22 @@ app.delete('/delete', (req, res) => {
 })
 
 app.listen(port, () => console.log(`The app is running at http://localhost:${port}`))
+
+
+
+// {
+// 	customForm && (
+// 	  <div className='dark:bg-[#1A3E5A] bg-[#9DBDFF] sm:right-[38%] inline-block sm:p-3 p-2 text-sm sm:text-lg mt-6 rounded-xl absolute'>
+// 		 {/* have to work on mobile thing white spacing width things  */}
+// 	  <form onSubmit={formSubmit}>
+// 		<label htmlFor="text" className='inline-block sm:w-[180px]'>Custom Name : </label>
+// 		<input className='my-1 text-black rounded-l sm:w-[200px] ' value={customNameOne}  onChange={(e) => setcustomNameOne(e.target.value)} name="customNameOne" /> <br />
+// 		<label htmlFor="text" className='inline-block sm:w-[180px]'>Custom Name  : </label>
+// 		<input className='my-1 text-black rounded-l sm:w-[200px] '  value={customNameTwo} onChange={e => setcustomNameTwo(e.target.value)} name="customNameTwo" /> <br />
+// 		<label htmlFor="text" className='inline-block sm:w-[180px]'>limit for API :  </label>
+// 		<input className='my-1 text-black rounded-l sm:w-[200px]' value={limit} onChange={e => setlimit(e.target.value)} name="limit" /> <br />
+// 		<button type="submit" className='mx-[60%] mt-2 dark:bg-gray-600 bg-[#0f172a] text-[#ffffff]  p-1 rounded-lg'>Submit</button>
+// 	  </form>
+// 	</div>
+// 	)
+//   }
