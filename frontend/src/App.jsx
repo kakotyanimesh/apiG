@@ -106,12 +106,12 @@ const App = () => {
     try {
       e.preventDefault();
 
-      const formData = {
-        customNameOne,
-        customNameTwo,
-        limit
-      }
-      await axios.post('/generateApi', formData)
+      // const formData = {
+      //   customNameOne,
+      //   customNameTwo,
+      //   limit
+      // }
+      // await axios.post('/generateApi', formData)
       setalert(true)
       setcustomForm(false)
       // console.log(limit);
