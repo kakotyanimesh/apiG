@@ -1,6 +1,7 @@
 const express = require("express")
 const cors = require("cors")
 const fs = require('fs')
+const { title } = require("process")
 const port = 3000
 
 const app = express()
@@ -68,10 +69,13 @@ app.get('/books', (req, res) => {
 
 
 app.post('/generateApi', (req, res) => {
+	// const {customNameOne , customNameTwo, limit} = req.body
 	const limit = 30
+	// console.log(limit);
+	
 	const newBooks = []
-
-	for (let i = 0; i < limit; i++) {
+// here => 30 / 40 bla bla 
+	for (let i = 0; i < limit || 40; i++) {
 		const books = {
 			id: jsonData.length + 1 + i,
 			title : generateBookName(),

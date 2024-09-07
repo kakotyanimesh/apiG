@@ -17,10 +17,16 @@ const App = () => {
   const [emptyApi, setEmptyApi] = useState(false)
   const [fetched, setfetched] = useState(false)
   const [clear, setclear] = useState(false)
+  const [customForm, setcustomForm] = useState(false)
+  const [alert, setalert] = useState(false)
   const [data, setdata] = useState([])
   const [statusCode, setstatusCode] = useState()
   const [config, setconfig] = useState()
   const [headers, setheaders] = useState()
+  const [customNameOne, setcustomNameOne] = useState('')
+  const [customNameTwo, setcustomNameTwo] = useState('')
+  const [limit, setlimit] = useState('')
+
 
   axios.defaults.baseURL = 'https://apig-backend.onrender.com';
 
@@ -85,10 +91,52 @@ const App = () => {
     }
   }
 
+  const form = async () => {
+    try {
+      setcustomForm(true)
+      setstatusCode(false)
+
+    } catch (error) {
+      console.log(`error in form creation ${error}`);
+      
+    }
+  }
+
+  const formSubmit = async (e) => {
+    try {
+      e.preventDefault();
+
+      const formData = {
+        customNameOne,
+        customNameTwo,
+        limit
+      }
+      await axios.post('/generateApi', formData)
+      setalert(true)
+      setcustomForm(false)
+      // console.log(limit);
+      // form data are not cleared after submitting it => fix tomorrow 
+      setTimeout(() => {
+        setalert(false)
+      }, 2000);
+      setcustomNameOne('')
+      setcustomNameTwo('')
+      setlimit('')
+      // data isnot going to backend 
+
+      
+    } catch (error) {
+      console.log(`error while submitting form : ${error}`);
+      
+    }
+  }
+
   const darkMode = () => {
     setdark(!dark)
     document.body.classList.toggle("dark")
   }
+
+
 
   return (
     <div className='dark:bg-[#0f172a] bg-[#ffffff] min-h-screen dark:text-white font-custom '>
@@ -120,7 +168,7 @@ const App = () => {
         <button className='dark:bg-gray-600 bg-[#0f172a] text-[#ffffff]  p-1 sm:p-2 rounded-lg' onClick={generateApi}>Generate API</button>
         <button className='dark:bg-gray-600 bg-[#0f172a] text-[#ffffff]  p-1 rounded-lg sm:p-2' onClick={getData}>Get Data</button>
         <button className='dark:bg-gray-600 bg-[#0f172a] text-[#ffffff]  p-1 rounded-lg sm:p-2' onClick={clearApi}>Clear API</button>
-        <button className='dark:bg-gray-600 bg-[#0f172a] text-[#ffffff]  p-1 rounded-lg sm:p-2'>CUSTOM</button>
+        <button className='dark:bg-gray-600 bg-[#0f172a] text-[#ffffff]  p-1 rounded-lg sm:p-2' onClick={form}>CUSTOM</button>
       </div>
 
       {/* rendering part */}
@@ -150,6 +198,29 @@ const App = () => {
           clear && (
             <div className='dark:bg-[#229799] bg-[#9DBDFF] inline-block sm:p-3 p-2 text-sm sm:text-lg mt-6 rounded-r-xl absolute'>
             <h1>API Cleared Successfully  </h1>
+          </div>
+          )
+        }
+        {
+          alert && (
+            <div className='dark:bg-[#229799] bg-[#9DBDFF] inline-block sm:p-3 p-2 text-sm sm:text-lg mt-6 rounded-r-xl absolute'>
+            <h1>Creating...  </h1>
+          </div>
+          )
+        }
+        {
+          customForm && (
+            <div className='dark:bg-[#1A3E5A] bg-[#9DBDFF] sm:right-[38%] inline-block sm:p-3 p-2 text-sm sm:text-lg mt-6 rounded-xl absolute'>
+               {/* have to work on mobile thing white spacing width things  */}
+            <form onSubmit={formSubmit}>
+              <label htmlFor="text" className='inline-block sm:w-[180px]'>Custom Name : </label>
+              <input className='my-1 text-black rounded-l sm:w-[200px] ' value={customNameOne}  onChange={(e) => setcustomNameOne(e.target.value)} name="customNameOne" /> <br />
+              <label htmlFor="text" className='inline-block sm:w-[180px]'>Custom Name  : </label>
+              <input className='my-1 text-black rounded-l sm:w-[200px] '  value={customNameTwo} onChange={e => setcustomNameTwo(e.target.value)} name="customNameTwo" /> <br />
+              <label htmlFor="text" className='inline-block sm:w-[180px]'>limit for API :  </label>
+              <input className='my-1 text-black rounded-l sm:w-[200px]' value={limit} onChange={e => setlimit(e.target.value)} name="limit" /> <br />
+              <button type="submit" className='mx-[60%] mt-2 dark:bg-gray-600 bg-[#0f172a] text-[#ffffff]  p-1 rounded-lg'>Submit</button>
+            </form>
           </div>
           )
         }
@@ -183,6 +254,8 @@ const App = () => {
           </div>
         )}
        </div>
+
+       
 
     </div>
   )
