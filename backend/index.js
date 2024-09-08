@@ -77,28 +77,28 @@ const generateUserId = () => {
 
 // authentication middleware 
 
-const auth = (req, res, next) => {
-	const token = req.headers.authorization
+// const auth = (req, res, next) => {
+// 	const token = req.headers.authorization
 
-	if(token){
-		jwt.verify(token, jwt_secret, (err, decode) => {
-			if(err){
-				res.status(404).json({
-					message : "unauthorized !!"
-				})
-			} else {
-				res.status(200).json({
-					message : "authorized to visit "
-				})
-				next()
-			}
-		})
-	}
-}
+// 	if(token){
+// 		jwt.verify(token, jwt_secret, (err, decode) => {
+// 			if(err){
+// 				res.status(404).json({
+// 					message : "unauthorized !!"
+// 				})
+// 			} else {
+// 				res.status(200).json({
+// 					message : "authorized to visit "
+// 				})
+// 				next()
+// 			}
+// 		})
+// 	}
+// }
 
 
 
-app.get('/books', auth, (req, res) => {
+app.get('/books', (req, res) => {
 	res.send(jsonData)
 })
 
@@ -138,52 +138,52 @@ app.delete('/delete', (req, res) => {
 	})
 })
 
-app.post('/signUp', (req, res) => {
-	const {username, password} = req.body
+// app.post('/signUp', (req, res) => {
+// 	const {username, password} = req.body
 
 	
 
-	userJson.push({
-		username,
-		password
-	})
+// 	userJson.push({
+// 		username,
+// 		password
+// 	})
 
 
-	fs.writeFile('users.json', JSON.stringify(userJson), (err) => {
-		if(err) throw err
-	})
-	res.status(200).json({
-		message : "user created !! "
-	})
+// 	fs.writeFile('users.json', JSON.stringify(userJson), (err) => {
+// 		if(err) throw err
+// 	})
+// 	res.status(200).json({
+// 		message : "user created !! "
+// 	})
 
-})
+// })
 
 
-app.post('/signIn', (req, res) => {
-	const {username, password } = req.body
+// app.post('/signIn', (req, res) => {
+// 	const {username, password } = req.body
 
-	const user = userJson.find(user => user.username === username && user.password === password)
+// 	const user = userJson.find(user => user.username === username && user.password === password)
 
-	if(user) {
-		const token = jwt.sign({
-			username: user.username,
+// 	if(user) {
+// 		const token = jwt.sign({
+// 			username: user.username,
 
-		}, jwt_secret)
+// 		}, jwt_secret)
 
-		user.token = token
+// 		user.token = token
 
-		res.send({
-			token
-		})
-		console.log(userJson);
+// 		res.send({
+// 			token
+// 		})
+// 		console.log(userJson);
 		
-	} else {
-		res.status(403).json({
-			message : "user not found !!"
-		})
-	}
+// 	} else {
+// 		res.status(403).json({
+// 			message : "user not found !!"
+// 		})
+// 	}
 
-})
+// })
 
 
 
