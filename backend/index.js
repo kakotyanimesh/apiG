@@ -1,9 +1,12 @@
 const express = require("express")
 const cors = require("cors")
 const fs = require('fs')
+const jwt = require('jsonwebtoken')
 const { title } = require("process")
 const port = 3000
 
+
+const jwt_secret = 'animesh_kakoty'
 const app = express()
 const corsOptions = {
     origin: ['http://localhost:5173', 'https://api-g.vercel.app'],
@@ -20,6 +23,11 @@ app.use(express.json())
 fs.readFile('booksApi.json', (err, data) => {
 	if(err) throw err
 	jsonData = JSON.parse(data)
+})
+
+fs.readFile('users.json', (err, data) => {
+	if(err) throw err
+	userJson = JSON.parse(data)
 })
 
 const generateBookName = () => {
@@ -67,15 +75,37 @@ const generateUserId = () => {
 // console.log(generateUserId());
 
 
+// authentication middleware 
 
-app.get('/books', (req, res) => {
+const auth = (req, res, next) => {
+	const token = req.headers.authorization
+
+	if(token){
+		jwt.verify(token, jwt_secret, (err, decode) => {
+			if(err){
+				res.status(404).json({
+					message : "unauthorized !!"
+				})
+			} else {
+				res.status(200).json({
+					message : "authorized to visit "
+				})
+				next()
+			}
+		})
+	}
+}
+
+
+
+app.get('/books', auth, (req, res) => {
 	res.send(jsonData)
 })
 
 
 app.post('/generateApi', (req, res) => {
-	// const {customNameOne , customNameTwo, limit} = req.body
-	const limit = 30
+	const {customNameOne , customNameTwo, limit = 10} = req.body
+	// const limit = 30
 	// console.log(limit);
 	
 	const newBooks = []
@@ -83,8 +113,8 @@ app.post('/generateApi', (req, res) => {
 	for (let i = 0; i < limit ; i++) {
 		const books = {
 			id: jsonData.length + 1 + i,
-			title : generateBookName(),
-			author: generateAuthorName()
+			[customNameOne || 'title']  : generateBookName(),
+			[customNameTwo || 'author']: generateAuthorName()
 		}
 
 		newBooks.push(books)
@@ -108,23 +138,56 @@ app.delete('/delete', (req, res) => {
 	})
 })
 
+app.post('/signUp', (req, res) => {
+	const {username, password} = req.body
+
+	
+
+	userJson.push({
+		username,
+		password
+	})
+
+
+	fs.writeFile('users.json', JSON.stringify(userJson), (err) => {
+		if(err) throw err
+	})
+	res.status(200).json({
+		message : "user created !! "
+	})
+
+})
+
+
+app.post('/signIn', (req, res) => {
+	const {username, password } = req.body
+
+	const user = userJson.find(user => user.username === username && user.password === password)
+
+	if(user) {
+		const token = jwt.sign({
+			username: user.username,
+
+		}, jwt_secret)
+
+		user.token = token
+
+		res.send({
+			token
+		})
+		console.log(userJson);
+		
+	} else {
+		res.status(403).json({
+			message : "user not found !!"
+		})
+	}
+
+})
+
+
+
+
 app.listen(port, () => console.log(`The app is running at http://localhost:${port}`))
 
 
-
-// {
-// 	customForm && (
-// 	  <div className='dark:bg-[#1A3E5A] bg-[#9DBDFF] sm:right-[38%] inline-block sm:p-3 p-2 text-sm sm:text-lg mt-6 rounded-xl absolute'>
-// 		 {/* have to work on mobile thing white spacing width things  */}
-// 	  <form onSubmit={formSubmit}>
-// 		<label htmlFor="text" className='inline-block sm:w-[180px]'>Custom Name : </label>
-// 		<input className='my-1 text-black rounded-l sm:w-[200px] ' value={customNameOne}  onChange={(e) => setcustomNameOne(e.target.value)} name="customNameOne" /> <br />
-// 		<label htmlFor="text" className='inline-block sm:w-[180px]'>Custom Name  : </label>
-// 		<input className='my-1 text-black rounded-l sm:w-[200px] '  value={customNameTwo} onChange={e => setcustomNameTwo(e.target.value)} name="customNameTwo" /> <br />
-// 		<label htmlFor="text" className='inline-block sm:w-[180px]'>limit for API :  </label>
-// 		<input className='my-1 text-black rounded-l sm:w-[200px]' value={limit} onChange={e => setlimit(e.target.value)} name="limit" /> <br />
-// 		<button type="submit" className='mx-[60%] mt-2 dark:bg-gray-600 bg-[#0f172a] text-[#ffffff]  p-1 rounded-lg'>Submit</button>
-// 	  </form>
-// 	</div>
-// 	)
-//   }
