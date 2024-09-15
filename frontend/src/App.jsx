@@ -28,7 +28,7 @@ const App = () => {
   const [limit, setlimit] = useState('')
 
 
-  axios.defaults.baseURL = 'https://apig-backend.onrender.com';
+  axios.defaults.baseURL = 'https://apig.onrender.com';
   // axios.defaults.baseURL = 'http://localhost:3000';
 
   const generateApi = async () => {
